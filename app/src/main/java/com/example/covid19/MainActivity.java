@@ -1,7 +1,6 @@
 package com.example.covid19;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +13,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,12 +22,15 @@ public class MainActivity extends AppCompatActivity {
   String url = "https://www.hpb.health.gov.lk/api/get-current-statistical";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //final String [] report= new String[1];
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         getconnect();
     }
     void getconnect(){
+        final TextView sl = (TextView) findViewById(R.id.sl);
+        final TextView gl = (TextView) findViewById(R.id.gl);
         final RequestQueue requestQueue= Volley.newRequestQueue(MainActivity.this);
         StringRequest sreq = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -39,7 +42,9 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("pasindu","Error");
+
+                sl.setText("No internet connection");
+                gl.setText("No internet connection");
                 error.printStackTrace();
                 requestQueue.stop();
             }
@@ -55,16 +60,50 @@ public class MainActivity extends AppCompatActivity {
          TextView sdc = (TextView) findViewById(R.id.sdc);
          TextView sdd = (TextView) findViewById(R.id.sdd);
          TextView date = (TextView) findViewById(R.id.date);
+         TextView sac = (TextView) findViewById(R.id.sac);
+         TextView gtc = (TextView) findViewById(R.id.gtc);
+         TextView gtd = (TextView) findViewById(R.id.gtd);
+         TextView gtr = (TextView) findViewById(R.id.gtr);
+         TextView gdc = (TextView) findViewById(R.id.gdc);
+         TextView gdd = (TextView) findViewById(R.id.gdd);
+         TextView gac = (TextView) findViewById(R.id.gac);
         //end build text views
 
-        stc.setText(search(1,s));
-        std.setText(search(2,s));
-        str.setText(search(7,s));
-        sdc.setText(search(4,s));
-        sdd.setText(search(6,s));
+
+
+        stc.setText(newsearch(1,s));
+        std.setText(newsearch(2,s));
+        str.setText(newsearch(7,s));
+        sdc.setText(newsearch(4,s));
+        sdd.setText(newsearch(6,s));
+         sac.setText(newsearch(3,s));
+         gtc.setText(newsearch(5,s));
+         gtd.setText(newsearch(12,s));
+         gtr.setText(newsearch(9,s));
+         gdc.setText(newsearch(10,s));
+         gdd.setText(newsearch(11,s));
+
          date.setText(sdate(s));
 
-        //Log.d("Count",search(1,s));
+        String cases = search(5,s);
+         String deaths = search(12,s);
+         String rec = search(9,s);
+         int num = Integer.parseInt(cases)-Integer.parseInt(deaths)-Integer.parseInt(rec);
+         String globactive = String.valueOf(num);
+         gac.setText(addcom(globactive));
+
+    }
+
+    static String addcom(String s){
+        long num = Long.parseLong(s);
+        NumberFormat format = NumberFormat.getInstance();
+        format.setGroupingUsed(true);
+        return format.format(num);
+    }
+    static String newsearch(int n,String data){
+        String s=search(n,data);
+        s=addcom(s);
+        return s;
     }
     static String drive(Pattern p,String data) throws IOException {
 
@@ -72,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         Matcher m = p.matcher(data);
         m.find();
         s= m.group(2);
+
         return s;
     }
     static String sdate(String data){
@@ -86,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         catch(IOException e){
 
         }
-        return "Updated in : "+res;
+        return "Last updated at: "+res;
     }
     static String search(int n,String data){
         String res="";
@@ -107,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                     search = "local_new_cases";
                     break;
                 case 5:
-                    search = "local_deaths";
+                    search = "global_total_cases";
                     break;
                 case 6:
                     search = "local_new_deaths";
@@ -117,7 +157,21 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 8:
                     search = "update_date_time";
+                    break;
+                case 9:
+                    search = "global_recovered";
+                    break;
+                case 10:
+                    search = "global_new_cases";
+                    break;
+                case 11:
+                    search = "global_new_deaths";
+                    break;
+                case 12:
+                    search = "global_deaths";
+                    break;
 
+                default:
                     break;
             }
             String sss="("+search+"\\Q\":\\E"+")"+"([0-9]+)";
