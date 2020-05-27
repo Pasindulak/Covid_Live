@@ -140,8 +140,9 @@
                         android:text="Total Active"
                         android:textColor="#FFFFFF"
                         android:textAlignment="center"
-                        android:textSize="21sp"
+                        android:textSize="19sp"
                         android:padding="4dp"
+                        android:autoSizeTextType="uniform"
                         />
                     <TextView
                         android:layout_width="match_parent"
@@ -421,6 +422,7 @@
                         android:textColor="#FFFFFF"
                         android:textAlignment="center"
                         android:textSize="21sp"
+                        android:autoSizeTextType="uniform"
                         android:padding="4dp"
                         />
                     <TextView
