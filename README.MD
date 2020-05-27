@@ -1,4 +1,4 @@
-# COVID-19 : Live Situational Analysis Dashboard of Sri Lanka
+# COVID-19 : Live Situational Analysis Dashboard
 
 This app was written using Android Studio with java.  It uses an API to update data which provided by the Health Promotion Bureau of Sri Lanka.  
 
